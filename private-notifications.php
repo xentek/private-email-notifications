@@ -3,7 +3,7 @@
 Plugin Name: Private Email Notifications
 Plugin URI: http://xentek.net/
 Description: Remove Email and IP address information from Email Notifications to protect the privacy of folks commenting on your blog.
-Version: 0.4
+Version: 0.4.1
 Author: Eric Marden
 Author URI: http://xentek.net/ 
 */
@@ -21,7 +21,6 @@ function wp_new_user_notification($user_id, $plaintext_pass = '') {
 
 		$message  = sprintf(__('New user registration on your blog %s:'), $blogname) . "\r\n\r\n";
 		$message .= sprintf(__('Username: %s'), $user_login) . "\r\n\r\n";
-		//$message .= sprintf(__('E-mail: %s'), $user_email) . "\r\n";
 
 		@wp_mail(get_option('admin_email'), sprintf(__('[%s] New User Registration'), $blogname), $message);
 
@@ -74,9 +73,7 @@ function wp_notify_moderator($comment_id) {
 						$notify_message	 = sprintf( __('A new comment on the post #%1$s "%2$s" is waiting for your approval'), $post->ID, $post->post_title ) . "\r\n";
 						$notify_message .= get_permalink($comment->comment_post_ID) . "\r\n\r\n";
 						$notify_message .= sprintf( __('Author : %1$s'), $comment->comment_author) . "\r\n";
-						//$notify_message .= sprintf( __('E-mail : %s'), $comment->comment_author_email ) . "\r\n";
 						$notify_message .= sprintf( __('URL	   : %s'), $comment->comment_author_url ) . "\r\n";
-						//$notify_message .= sprintf( __('Whois	 : http://ws.arin.net/cgi-bin/whois.pl?queryinput=%s'), $comment->comment_author_IP ) . "\r\n";
 						$notify_message .= __('Comment: ') . "\r\n" . $comment->comment_content . "\r\n\r\n";
 						break;
 		}
@@ -86,10 +83,9 @@ function wp_notify_moderator($comment_id) {
 				$notify_message .= sprintf( __('Trash it: %s'), admin_url("comment.php?action=trash&c=$comment_id") ) . "\r\n";
 		else
 				$notify_message .= sprintf( __('Delete it: %s'), admin_url("comment.php?action=delete&c=$comment_id") ) . "\r\n";
-		$notify_message .= sprintf( __('Spam it: %s'), admin_url("comment.php?action=spam&c=$comment_id") ) . "\r\n";
+				$notify_message .= sprintf( __('Spam it: %s'), admin_url("comment.php?action=spam&c=$comment_id") ) . "\r\n";
 
-		$notify_message .= sprintf( _n('Currently %s comment is waiting for approval. Please visit the moderation panel:',
-				'Currently %s comments are waiting for approval. Please visit the moderation panel:', $comments_waiting), number_format_i18n($comments_waiting) ) . "\r\n";
+		$notify_message .= sprintf( _n('Currently %s comment is waiting for approval. Please visit the moderation panel:', 'Currently %s comments are waiting for approval. Please visit the moderation panel:', $comments_waiting), number_format_i18n($comments_waiting) ) . "\r\n";
 		$notify_message .= admin_url("edit-comments.php?comment_status=moderated") . "\r\n";
 
 		$subject = sprintf( __('[%1$s] Please moderate: "%2$s"'), $blogname, $post->post_title );
@@ -129,9 +125,7 @@ function wp_notify_postauthor($comment_id, $comment_type='') {
 					$notify_message	 = sprintf( __('New comment on your post #%1$s "%2$s"'), $comment->comment_post_ID, $post->post_title ) . "\r\n";
 					/* translators: 1: comment author, 2: author IP, 3: author domain */
 					$notify_message .= sprintf( __('Author : %1$s (IP: %2$s , %3$s)'), $comment->comment_author, $comment->comment_author_IP, $comment_author_domain ) . "\r\n";
-					//$notify_message .= sprintf( __('E-mail : %s'), $comment->comment_author_email ) . "\r\n";
 					$notify_message .= sprintf( __('URL	   : %s'), $comment->comment_author_url ) . "\r\n";
-					//$notify_message .= sprintf( __('Whois	 : http://ws.arin.net/cgi-bin/whois.pl?queryinput=%s'), $comment->comment_author_IP ) . "\r\n";
 					$notify_message .= __('Comment: ') . "\r\n" . $comment->comment_content . "\r\n\r\n";
 					$notify_message .= __('You can see all comments on this post here: ') . "\r\n";
 					/* translators: 1: blog name, 2: post title */
